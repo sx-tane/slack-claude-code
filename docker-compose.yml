@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  claude-slack-bot:
+    build: .
+    container_name: claude-slack-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      # Mount your repositories (adjust paths as needed)
+      - /path/to/your/repos:/repos:ro
+      # Persistent workspace
+      - claude-workspace:/tmp/claude-workspace
+      # Logs
+      - ./logs:/app/logs
+    environment:
+      - TZ=UTC
+    healthcheck:
+      test: ["CMD", "python3", "-c", "from config import *; print('OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  claude-workspace:
+    driver: local

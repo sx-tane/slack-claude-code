@@ -1,0 +1,31 @@
+[Unit]
+Description=Claude Code Slack Bot
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=your-username
+Group=your-group
+WorkingDirectory=/path/to/slack-claude-code
+Environment=PATH=/usr/bin:/usr/local/bin:/home/your-username/.local/bin
+EnvironmentFile=/path/to/slack-claude-code/.env
+ExecStart=/usr/bin/python3 app.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=claude-slack-bot
+
+# Security settings
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/tmp/claude-workspace /path/to/slack-claude-code/logs
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target
